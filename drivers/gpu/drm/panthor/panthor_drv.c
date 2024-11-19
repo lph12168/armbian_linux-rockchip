@@ -1410,6 +1410,7 @@ static int panthor_probe(struct platform_device *pdev)
 {
 	struct panthor_device *ptdev;
 
+	pr_info("[latte] %s +\n", __func__);
 	ptdev = devm_drm_dev_alloc(&pdev->dev, &panthor_drm_driver,
 				   struct panthor_device, base);
 	if (IS_ERR(ptdev))
@@ -1461,6 +1462,7 @@ static int __init panthor_init(void)
 {
 	int ret;
 
+	pr_info("[latte] %s +\n", __func__);
 	ret = panthor_mmu_pt_cache_init();
 	if (ret)
 		return ret;

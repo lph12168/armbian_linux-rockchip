@@ -3029,6 +3029,7 @@ static int __init allocate_lpi_tables(void)
 	u64 val;
 	int err, cpu;
 
+	pr_info("[latte][gic-v3] %s +\n", __func__);
 	/*
 	 * If LPIs are enabled while we run this from the boot CPU,
 	 * flag the RD tables as pre-allocated if the stars do align.
@@ -3111,6 +3112,7 @@ static void its_cpu_init_lpis(void)
 	phys_addr_t paddr;
 	u64 val, tmp;
 
+	pr_info("[latte][gic-v3] %s +\n", __func__);
 	if (gic_data_rdist()->flags & RD_LOCAL_LPI_ENABLED)
 		return;
 
@@ -5319,6 +5321,7 @@ static int redist_disable_lpis(void)
 
 int its_cpu_init(void)
 {
+	pr_info("[latte][gic-v3] %s +\n", __func__);
 	if (!list_empty(&its_nodes)) {
 		int ret;
 
@@ -5406,6 +5409,7 @@ static int __init its_of_probe(struct device_node *node)
 	struct device_node *np;
 	struct resource res;
 
+	pr_info("[latte][gic-v3] %s +\n", __func__);
 	/*
 	 * Make sure *all* the ITS are reset before we probe any, as
 	 * they may be sharing memory. If any of the ITS fails to
@@ -5655,6 +5659,7 @@ int __init its_init(struct fwnode_handle *handle, struct rdists *rdists,
 	bool has_v4_1 = false;
 	int err;
 
+	pr_info("[latte][gic-v3] %s +\n", __func__);
 	gic_rdists = rdists;
 
 	its_parent = parent_domain;

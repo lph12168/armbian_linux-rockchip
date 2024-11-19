@@ -265,10 +265,13 @@ int __init mbi_init(struct fwnode_handle *fwnode, struct irq_domain *parent)
 	const __be32 *reg;
 	int ret, n;
 
+	pr_info("[latte][gic-v3] %s +\n", __func__);
 	np = to_of_node(fwnode);
 
-	if (!of_property_read_bool(np, "msi-controller"))
+	if (!of_property_read_bool(np, "msi-controller")) {
+		pr_info("[latte][gic-v3] %s not support msi-controller\n", __func__);
 		return 0;
+	}
 
 	n = of_property_count_elems_of_size(np, "mbi-ranges", sizeof(u32));
 	if (n <= 0 || n % 2)

@@ -1093,6 +1093,7 @@ static int __gic_update_rdist_properties(struct redist_region *region,
 
 static void gic_update_rdist_properties(void)
 {
+	pr_info("[latte][gic-v3] %s +\n", __func__);
 	gic_data.ppi_nr = UINT_MAX;
 	gic_iterate_rdists(__gic_update_rdist_properties);
 	if (WARN_ON(gic_data.ppi_nr == UINT_MAX))
@@ -1960,6 +1961,7 @@ static int __init gic_init_bases(phys_addr_t dist_phys_base,
 	u32 typer;
 	int err;
 
+	pr_info("[latte][gic-v3] %s +\n", __func__);
 	if (!is_hyp_mode_available())
 		static_branch_disable(&supports_deactivate_key);
 
@@ -1978,6 +1980,7 @@ static int __init gic_init_bases(phys_addr_t dist_phys_base,
 	 */
 	typer = readl_relaxed(gic_data.dist_base + GICD_TYPER);
 	gic_data.rdists.gicd_typer = typer;
+	pr_info("[latte][gic-v3] %s: typer = 0x%x\n", __func__, typer);
 
 	gic_enable_quirks(readl_relaxed(gic_data.dist_base + GICD_IIDR),
 			  gic_quirks, &gic_data);
@@ -2054,6 +2057,7 @@ static int __init gic_validate_dist_version(void __iomem *dist_base)
 {
 	u32 reg = readl_relaxed(dist_base + GICD_PIDR2) & GIC_PIDR2_ARCH_MASK;
 
+	pr_info("[latte][gic-v3] %s: reg = 0x%x\n", __func__, reg);
 	if (reg != GIC_PIDR2_ARCH_GICv3 && reg != GIC_PIDR2_ARCH_GICv4)
 		return -ENODEV;
 
@@ -2202,6 +2206,8 @@ static void __iomem *gic_of_iomap(struct device_node *node, int idx,
 	if (ret)
 		return IOMEM_ERR_PTR(ret);
 
+	pr_info("[latte][gic-v3] %s: name =%s, start = 0x%llx, len = 0x%llx\n",
+		__func__, name, res->start, resource_size(res));
 	gic_request_region(res->start, resource_size(res), name);
 	base = of_iomap(node, idx);
 
