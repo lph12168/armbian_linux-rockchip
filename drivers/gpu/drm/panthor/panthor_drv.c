@@ -755,6 +755,7 @@ static int panthor_ioctl_dev_query(struct drm_device *ddev, void *data, struct d
 	struct panthor_device *ptdev = container_of(ddev, struct panthor_device, base);
 	struct drm_panthor_dev_query *args = data;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (!args->pointer) {
 		switch (args->type) {
 		case DRM_PANTHOR_DEV_QUERY_GPU_INFO:
@@ -792,6 +793,7 @@ static int panthor_ioctl_vm_create(struct drm_device *ddev, void *data,
 	struct drm_panthor_vm_create *args = data;
 	int cookie, ret;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (!drm_dev_enter(ddev, &cookie))
 		return -ENODEV;
 
@@ -811,6 +813,7 @@ static int panthor_ioctl_vm_destroy(struct drm_device *ddev, void *data,
 	struct panthor_file *pfile = file->driver_priv;
 	struct drm_panthor_vm_destroy *args = data;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (args->pad)
 		return -EINVAL;
 
@@ -827,6 +830,7 @@ static int panthor_ioctl_bo_create(struct drm_device *ddev, void *data,
 	struct panthor_vm *vm = NULL;
 	int cookie, ret;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (!drm_dev_enter(ddev, &cookie))
 		return -ENODEV;
 
@@ -861,6 +865,7 @@ static int panthor_ioctl_bo_mmap_offset(struct drm_device *ddev, void *data,
 	struct drm_gem_object *obj;
 	int ret;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (args->pad)
 		return -EINVAL;
 
@@ -888,6 +893,7 @@ static int panthor_ioctl_group_submit(struct drm_device *ddev, void *data,
 	struct panthor_submit_ctx ctx;
 	int ret = 0, cookie;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (args->pad)
 		return -EINVAL;
 
@@ -990,6 +996,7 @@ static int panthor_ioctl_group_destroy(struct drm_device *ddev, void *data,
 	struct panthor_file *pfile = file->driver_priv;
 	struct drm_panthor_group_destroy *args = data;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (args->pad)
 		return -EINVAL;
 
@@ -1022,6 +1029,7 @@ static int panthor_ioctl_group_create(struct drm_device *ddev, void *data,
 	struct drm_panthor_queue_create *queue_args;
 	int ret;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (!args->queues.count)
 		return -EINVAL;
 
@@ -1049,6 +1057,7 @@ static int panthor_ioctl_group_get_state(struct drm_device *ddev, void *data,
 	struct panthor_file *pfile = file->driver_priv;
 	struct drm_panthor_group_get_state *args = data;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	return panthor_group_get_state(pfile, args);
 }
 
@@ -1061,6 +1070,7 @@ static int panthor_ioctl_tiler_heap_create(struct drm_device *ddev, void *data,
 	struct panthor_vm *vm;
 	int ret;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	vm = panthor_vm_pool_get_vm(pfile->vms, args->vm_id);
 	if (!vm)
 		return -EINVAL;
@@ -1104,6 +1114,7 @@ static int panthor_ioctl_tiler_heap_destroy(struct drm_device *ddev, void *data,
 	struct panthor_vm *vm;
 	int ret;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (args->pad)
 		return -EINVAL;
 
@@ -1135,6 +1146,7 @@ static int panthor_ioctl_vm_bind_async(struct drm_device *ddev,
 	struct panthor_vm *vm;
 	int ret = 0;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	vm = panthor_vm_pool_get_vm(pfile->vms, args->vm_id);
 	if (!vm)
 		return -EINVAL;
@@ -1203,6 +1215,7 @@ static int panthor_ioctl_vm_bind_sync(struct drm_device *ddev,
 	struct panthor_vm *vm;
 	int ret;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	vm = panthor_vm_pool_get_vm(pfile->vms, args->vm_id);
 	if (!vm)
 		return -EINVAL;
@@ -1235,6 +1248,7 @@ static int panthor_ioctl_vm_bind(struct drm_device *ddev, void *data,
 	struct drm_panthor_vm_bind *args = data;
 	int cookie, ret;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (!drm_dev_enter(ddev, &cookie))
 		return -ENODEV;
 
@@ -1254,6 +1268,7 @@ static int panthor_ioctl_vm_get_state(struct drm_device *ddev, void *data,
 	struct drm_panthor_vm_get_state *args = data;
 	struct panthor_vm *vm;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	vm = panthor_vm_pool_get_vm(pfile->vms, args->vm_id);
 	if (!vm)
 		return -EINVAL;
@@ -1346,6 +1361,7 @@ static int panthor_mmap(struct file *filp, struct vm_area_struct *vma)
 	u64 offset = (u64)vma->vm_pgoff << PAGE_SHIFT;
 	int ret, cookie;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (!drm_dev_enter(file->minor->dev, &cookie))
 		return -ENODEV;
 
@@ -1410,7 +1426,7 @@ static int panthor_probe(struct platform_device *pdev)
 {
 	struct panthor_device *ptdev;
 
-	pr_info("[latte] %s +\n", __func__);
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	ptdev = devm_drm_dev_alloc(&pdev->dev, &panthor_drm_driver,
 				   struct panthor_device, base);
 	if (IS_ERR(ptdev))
@@ -1462,7 +1478,7 @@ static int __init panthor_init(void)
 {
 	int ret;
 
-	pr_info("[latte] %s +\n", __func__);
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	ret = panthor_mmu_pt_cache_init();
 	if (ret)
 		return ret;

@@ -1003,6 +1003,7 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct device *dev,
 	struct dma_buf_attachment *attach;
 	int ret;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (WARN_ON(!dmabuf || !dev))
 		return ERR_PTR(-EINVAL);
 
@@ -1021,6 +1022,7 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct device *dev,
 	attach->importer_priv = importer_priv;
 
 	if (dmabuf->ops->attach) {
+		pr_info("[latte][%s][%-4d] dmabuf->ops->attach\n", __func__, current->pid);
 		ret = dmabuf->ops->attach(dmabuf, attach);
 		if (ret)
 			goto err_attach;
@@ -1044,6 +1046,7 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct device *dev,
 				goto err_unlock;
 		}
 
+		pr_info("[latte][%s][%-4d] __map_dma_buf called\n", __func__, current->pid);
 		sgt = __map_dma_buf(attach, DMA_BIDIRECTIONAL);
 		if (!sgt)
 			sgt = ERR_PTR(-ENOMEM);

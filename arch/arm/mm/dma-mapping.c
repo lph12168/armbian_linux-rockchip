@@ -1820,6 +1820,8 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
 void *arch_dma_alloc(struct device *dev, size_t size, dma_addr_t *dma_handle,
 		gfp_t gfp, unsigned long attrs)
 {
+	pr_info("[latte][%s][%-4d] dev = %s\n", __func__, current->pid,
+		dev_driver_string(dev));
 	return __dma_alloc(dev, size, dma_handle, gfp,
 			   __get_dma_pgprot(attrs, PAGE_KERNEL), false,
 			   attrs, __builtin_return_address(0));

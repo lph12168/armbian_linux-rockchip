@@ -886,6 +886,8 @@ static struct sg_table *iommu_dma_alloc_noncontiguous(struct device *dev,
 {
 	struct dma_sgt_handle *sh;
 
+	pr_info("[latte][%s][%-4d] +, dev = %s\n", __func__, current->pid,
+		dev_driver_string(dev));
 	sh = kmalloc(sizeof(*sh), gfp);
 	if (!sh)
 		return NULL;
@@ -915,6 +917,8 @@ static void iommu_dma_sync_single_for_cpu(struct device *dev,
 {
 	phys_addr_t phys;
 
+	pr_info("[latte][%s][%-4d] +, dev = %s\n", __func__, current->pid,
+		dev_driver_string(dev));
 	if (dev_is_dma_coherent(dev) && !dev_use_swiotlb(dev))
 		return;
 
@@ -931,6 +935,8 @@ static void iommu_dma_sync_single_for_device(struct device *dev,
 {
 	phys_addr_t phys;
 
+	pr_info("[latte][%s][%-4d] +, dev = %s\n", __func__, current->pid,
+		dev_driver_string(dev));
 	if (dev_is_dma_coherent(dev) && !dev_use_swiotlb(dev))
 		return;
 
@@ -949,6 +955,8 @@ static void iommu_dma_sync_sg_for_cpu(struct device *dev,
 	struct scatterlist *sg;
 	int i;
 
+	pr_info("[latte][%s][%-4d] +, dev = %s\n", __func__, current->pid,
+		dev_driver_string(dev));
 	if (dev_use_swiotlb(dev))
 		for_each_sg(sgl, sg, nelems, i)
 			iommu_dma_sync_single_for_cpu(dev, sg_dma_address(sg),
@@ -965,6 +973,8 @@ static void iommu_dma_sync_sg_for_device(struct device *dev,
 	struct scatterlist *sg;
 	int i;
 
+	pr_info("[latte][%s][%-4d] +, dev = %s\n", __func__, current->pid,
+		dev_driver_string(dev));
 	if (dev_use_swiotlb(dev))
 		for_each_sg(sgl, sg, nelems, i)
 			iommu_dma_sync_single_for_device(dev,
@@ -987,6 +997,8 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
 	struct iova_domain *iovad = &cookie->iovad;
 	dma_addr_t iova, dma_mask = dma_get_mask(dev);
 
+	pr_info("[latte][%s][%-4d] +, dev = %s\n", __func__, current->pid,
+		dev_driver_string(dev));
 	/*
 	 * If both the physical buffer start address and size are
 	 * page aligned, we don't need to use a bounce page.
@@ -1199,6 +1211,8 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
 	ssize_t ret;
 	int i;
 
+	pr_info("[latte][%s][%-4d] +, dev = %s\n", __func__, current->pid,
+		dev_driver_string(dev));
 	if (static_branch_unlikely(&iommu_deferred_attach_enabled)) {
 		ret = iommu_deferred_attach(dev, domain);
 		if (ret)
@@ -1356,6 +1370,8 @@ static void iommu_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
 static dma_addr_t iommu_dma_map_resource(struct device *dev, phys_addr_t phys,
 		size_t size, enum dma_data_direction dir, unsigned long attrs)
 {
+	pr_info("[latte][%s][%-4d] +, dev = %s\n", __func__, current->pid,
+		dev_driver_string(dev));
 	return __iommu_dma_map(dev, phys, size,
 			dma_info_to_prot(dir, false, attrs) | IOMMU_MMIO,
 			dma_get_mask(dev));
@@ -1450,6 +1466,8 @@ static void *iommu_dma_alloc(struct device *dev, size_t size,
 	struct page *page = NULL;
 	void *cpu_addr;
 
+	pr_info("[latte][%s][%-4d] +, dev = %s\n", __func__, current->pid,
+		dev_driver_string(dev));
 	gfp |= __GFP_ZERO;
 
 	if (gfpflags_allow_blocking(gfp) &&
@@ -1485,6 +1503,8 @@ static int iommu_dma_mmap(struct device *dev, struct vm_area_struct *vma,
 	unsigned long pfn, off = vma->vm_pgoff;
 	int ret;
 
+	pr_info("[latte][%s][%-4d] +, dev = %s\n", __func__, current->pid,
+		dev_driver_string(dev));
 	vma->vm_page_prot = dma_pgprot(dev, vma->vm_page_prot, attrs);
 
 	if (dma_mmap_from_dev_coherent(dev, vma, cpu_addr, size, &ret))
@@ -1515,6 +1535,8 @@ static int iommu_dma_get_sgtable(struct device *dev, struct sg_table *sgt,
 	struct page *page;
 	int ret;
 
+	pr_info("[latte][%s][%-4d] +, dev = %s\n", __func__, current->pid,
+		dev_driver_string(dev));
 	if (is_vmalloc_addr(cpu_addr)) {
 		struct page **pages = dma_common_find_pages(cpu_addr);
 
@@ -1589,6 +1611,8 @@ void iommu_setup_dma_ops(struct device *dev, u64 dma_base, u64 dma_limit)
 	if (iommu_is_dma_domain(domain)) {
 		if (iommu_dma_init_domain(domain, dma_base, dma_limit, dev))
 			goto out_err;
+		pr_info("[latte][%s][%-4d] dev = %s, dma_ops = iommu_dma_ops\n",
+			__func__, current->pid, dev_driver_string(dev));
 		dev->dma_ops = &iommu_dma_ops;
 	}
 

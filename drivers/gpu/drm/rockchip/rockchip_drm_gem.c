@@ -40,6 +40,7 @@ static int rockchip_gem_iommu_map(struct rockchip_gem_object *rk_obj)
 	int prot = IOMMU_READ | IOMMU_WRITE;
 	ssize_t ret;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	mutex_lock(&private->mm_lock);
 	ret = drm_mm_insert_node_generic(&private->mm, &rk_obj->mm,
 					 rk_obj->base.size, PAGE_SIZE,
@@ -52,6 +53,9 @@ static int rockchip_gem_iommu_map(struct rockchip_gem_object *rk_obj)
 	}
 
 	rk_obj->dma_addr = rk_obj->mm.start;
+
+	pr_info("[latte][%s][%-4d] dma_addr = 0x%llx, size = %lu\n", __func__, current->pid,
+		rk_obj->dma_addr, rk_obj->base.size);
 
 	ret = iommu_map_sgtable(private->domain, rk_obj->dma_addr, rk_obj->sgt,
 				prot);
@@ -135,6 +139,7 @@ static int rockchip_gem_get_pages(struct rockchip_gem_object *rk_obj)
 	struct page_info *info;
 	unsigned int maximum;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	for (i = 0; i < PG_ROUND; i++)
 		INIT_LIST_HEAD(&lists[i]);
 
@@ -266,6 +271,7 @@ static int rockchip_gem_alloc_dma(struct rockchip_gem_object *rk_obj,
 	int ret, i;
 	struct scatterlist *s;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	rk_obj->dma_attrs = DMA_ATTR_WRITE_COMBINE;
 
 	if (!alloc_kmap)
@@ -355,6 +361,7 @@ static int rockchip_gem_alloc_secure(struct rockchip_gem_object *rk_obj)
 	struct sg_table *sgt;
 	int ret = 0, i;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (!private->secure_buffer_pool) {
 		DRM_ERROR("No secure buffer pool found\n");
 		return -ENOMEM;
@@ -427,6 +434,7 @@ static int rockchip_gem_alloc_buf(struct rockchip_gem_object *rk_obj,
 	struct rockchip_drm_private *private = drm->dev_private;
 	int ret = 0;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (!private->domain && is_vop_enabled())
 		rk_obj->flags |= ROCKCHIP_BO_CONTIG;
 
@@ -648,6 +656,7 @@ rockchip_gem_create_object(struct drm_device *drm, unsigned int size,
 	struct rockchip_gem_object *rk_obj;
 	int ret;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	rk_obj = rockchip_gem_alloc_object(drm, size, flags);
 	if (IS_ERR(rk_obj))
 		return rk_obj;
@@ -730,6 +739,7 @@ rockchip_gem_create_with_handle(struct drm_file *file_priv,
 	int ret;
 	bool alloc_kmap = flags & ROCKCHIP_BO_ALLOC_KMAP ? true : false;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	is_framebuffer = drm->fb_helper && file_priv == drm->fb_helper->client.file;
 
 	rk_obj = rockchip_gem_create_object(drm, size, is_framebuffer | alloc_kmap, flags);
@@ -748,6 +758,7 @@ rockchip_gem_create_with_handle(struct drm_file *file_priv,
 
 	/* drop reference from allocate - handle holds it now. */
 	drm_gem_object_put(obj);
+	pr_info("[latte][%s][%-4d] handle = %d\n", __func__, current->pid, *handle);
 
 	return rk_obj;
 
@@ -771,6 +782,7 @@ int rockchip_gem_dumb_create(struct drm_file *file_priv,
 	struct rockchip_gem_object *rk_obj;
 	u32 min_pitch = args->width * DIV_ROUND_UP(args->bpp, 8);
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	/*
 	 * align to 64 bytes since Mali requires it.
 	 */
@@ -855,6 +867,7 @@ rockchip_gem_prime_import_sg_table(struct drm_device *drm,
 	struct rockchip_gem_object *rk_obj;
 	int ret;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	rk_obj = rockchip_gem_alloc_object(drm, attach->dmabuf->size, 0);
 	if (IS_ERR(rk_obj))
 		return ERR_CAST(rk_obj);

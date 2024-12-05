@@ -1963,6 +1963,8 @@ fail_detach:
 static struct drm_gem_object *rockchip_drm_gem_prime_import(struct drm_device *dev,
 							    struct dma_buf *dma_buf)
 {
+
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	return rockchip_drm_gem_prime_import_dev(dev, dma_buf, dev->dev);
 }
 

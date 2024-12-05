@@ -147,6 +147,8 @@ static void *__dma_alloc_from_coherent(struct device *dev,
 	int pageno;
 	void *ret;
 
+	pr_info("[latte][%s][%-4d] dev = %s\n", __func__, current->pid,
+		dev_driver_string(dev));
 	spin_lock_irqsave(&mem->spinlock, flags);
 
 	if (unlikely(size > ((dma_addr_t)mem->size << PAGE_SHIFT)))
@@ -192,6 +194,8 @@ int dma_alloc_from_dev_coherent(struct device *dev, ssize_t size,
 	if (!mem)
 		return 0;
 
+	pr_info("[latte][%s][%-4d] dev = %s\n", __func__, current->pid,
+		dev_driver_string(dev));
 	*ret = __dma_alloc_from_coherent(dev, mem, size, dma_handle);
 	return 1;
 }
@@ -282,6 +286,8 @@ static struct dma_coherent_mem *dma_coherent_default_memory __ro_after_init;
 void *dma_alloc_from_global_coherent(struct device *dev, ssize_t size,
 				     dma_addr_t *dma_handle)
 {
+	pr_info("[latte][%s][%-4d] dev = %s\n", __func__, current->pid,
+		dev_driver_string(dev));
 	if (!dma_coherent_default_memory)
 		return NULL;
 
@@ -337,7 +343,8 @@ static int rmem_dma_device_init(struct reserved_mem *rmem, struct device *dev)
 {
 	if (!rmem->priv) {
 		struct dma_coherent_mem *mem;
-
+		pr_info("[latte][%s][%-4d] dev = %s\n", __func__, current->pid,
+			dev_driver_string(dev));
 		mem = dma_init_coherent_memory(rmem->base, rmem->base,
 					       rmem->size, true);
 		if (IS_ERR(mem))

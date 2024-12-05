@@ -490,6 +490,8 @@ static int arm_lpae_map_pages(struct io_pgtable_ops *ops, unsigned long iova,
 	arm_lpae_iopte prot;
 	long iaext = (s64)iova >> cfg->ias;
 
+	pr_info("[latte][%s][%-4d] iova = 0x%lx, paddr = 0x%llx, pgsize = 0x%lx\n",
+		__func__, current->pid, iova, paddr, pgsize);
 	if (WARN_ON(!pgsize || (pgsize & cfg->pgsize_bitmap) != pgsize))
 		return -EINVAL;
 
@@ -1310,6 +1312,7 @@ static int __init arm_lpae_do_selftests(void)
 		.iommu_dev = &dev,
 	};
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	/* __arm_lpae_alloc_pages() merely needs dev_to_node() to work */
 	set_dev_node(&dev, NUMA_NO_NODE);
 

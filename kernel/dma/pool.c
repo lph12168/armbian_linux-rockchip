@@ -196,9 +196,13 @@ static int __init dma_atomic_pool_init(void)
 		unsigned long pages = totalram_pages() / (SZ_1G / SZ_128K);
 		pages = min_t(unsigned long, pages, MAX_ORDER_NR_PAGES);
 		atomic_pool_size = max_t(size_t, pages << PAGE_SHIFT, SZ_128K);
+		pr_info("[latte][%s][%-4d] atomic_pool_size[init] = 0x%x\n",
+			__func__, current->pid, atomic_pool_size);
 	}
 	INIT_WORK(&atomic_pool_work, atomic_pool_work_fn);
 
+	pr_info("[latte][%s][%-4d] atomic_pool_size = 0x%x\n",
+		__func__, current->pid, atomic_pool_size);
 	atomic_pool_kernel = __dma_atomic_pool_init(atomic_pool_size,
 						    GFP_KERNEL);
 	if (!atomic_pool_kernel)
@@ -269,6 +273,8 @@ struct page *dma_alloc_from_pool(struct device *dev, size_t size,
 	struct gen_pool *pool = NULL;
 	struct page *page;
 
+	pr_info("[latte][%s][%-4d] dev = %s, size = 0x%x\n", __func__,
+		current->pid, dev_driver_string(dev), size);
 	while ((pool = dma_guess_pool(pool, gfp))) {
 		page = __dma_alloc_from_pool(dev, size, pool, cpu_addr,
 					     phys_addr_ok);

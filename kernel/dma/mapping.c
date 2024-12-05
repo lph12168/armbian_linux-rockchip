@@ -506,8 +506,11 @@ void *dma_alloc_attrs(struct device *dev, size_t size, dma_addr_t *dma_handle,
 
 	if (dma_alloc_direct(dev, ops))
 		cpu_addr = dma_direct_alloc(dev, size, dma_handle, flag, attrs);
-	else if (ops->alloc)
+	else if (ops->alloc) {
+		pr_info("[latte][%s][%-4d] ops->alloc() +, dev = %s\n",
+			__func__, current->pid, dev_driver_string(dev));
 		cpu_addr = ops->alloc(dev, size, dma_handle, flag, attrs);
+	}
 	else
 		return NULL;
 

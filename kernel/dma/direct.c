@@ -175,6 +175,8 @@ static void *dma_direct_alloc_from_pool(struct device *dev, size_t size,
 	u64 phys_mask;
 	void *ret;
 
+	pr_info("[latte][%s][%-4d] dev = %s\n", __func__, current->pid,
+		dev_driver_string(dev));
 	if (WARN_ON_ONCE(!IS_ENABLED(CONFIG_DMA_COHERENT_POOL)))
 		return NULL;
 
@@ -228,9 +230,12 @@ void *dma_direct_alloc(struct device *dev, size_t size,
 		if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
 		    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
 		    !IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
-		    !is_swiotlb_for_alloc(dev))
+		    !is_swiotlb_for_alloc(dev)) {
+			pr_info("[latte][%s][%-4d] arch_dma_alloc +, dev = %s\n",
+				__func__, current->pid, dev_driver_string(dev));
 			return arch_dma_alloc(dev, size, dma_handle, gfp,
 					      attrs);
+		    }
 
 		/*
 		 * If there is a global pool, always allocate from it for

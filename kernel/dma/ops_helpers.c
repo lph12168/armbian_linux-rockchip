@@ -64,6 +64,7 @@ struct page *dma_common_alloc_pages(struct device *dev, size_t size,
 	const struct dma_map_ops *ops = get_dma_ops(dev);
 	struct page *page;
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	page = dma_alloc_contiguous(dev, size, gfp);
 	if (!page)
 		page = alloc_pages_node(dev_to_node(dev), gfp, get_order(size));

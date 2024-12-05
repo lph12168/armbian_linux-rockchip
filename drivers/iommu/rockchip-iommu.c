@@ -942,6 +942,9 @@ static int rk_iommu_map_iova(struct rk_iommu_domain *rk_domain, u32 *pte_addr,
 	unsigned int pte_total = size / SPAGE_SIZE;
 	phys_addr_t page_phys;
 
+	pr_debug("[latte][%s][%-4d] pte_dma = 0x%llx, iova = 0x%llx, paddr = 0x%llx, size = %lu\n",
+		__func__, current->pid, pte_dma, iova, paddr, size);
+
 	assert_spin_locked(&rk_domain->dt_lock);
 
 	for (pte_count = 0; pte_count < pte_total; pte_count++) {
@@ -993,9 +996,11 @@ static int rk_iommu_map(struct iommu_domain *domain, unsigned long _iova,
 	u32 dte, pte_index;
 	int ret;
 
-	if (rk_domain->opt_ops && rk_domain->opt_ops->map)
+	if (rk_domain->opt_ops && rk_domain->opt_ops->map) {
+		pr_info("[latte][%s][%-4d] use opt_ops\n", __func__, current->pid);
 		return rk_domain->opt_ops->map(domain, _iova, paddr, size, prot,
 					       gfp, rk_domain->iommu_dev);
+	}
 
 	spin_lock_irqsave(&rk_domain->dt_lock, flags);
 

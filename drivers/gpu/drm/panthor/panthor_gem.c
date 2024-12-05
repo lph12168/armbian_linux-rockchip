@@ -128,6 +128,7 @@ static int panthor_gem_mmap(struct drm_gem_object *obj, struct vm_area_struct *v
 {
 	struct panthor_gem_object *bo = to_panthor_bo(obj);
 
+	pr_info("[latte][%s][%-4d] +\n", __func__, current->pid);
 	/* Don't allow mmap on objects that have the NO_MMAP flag set. */
 	if (bo->flags & DRM_PANTHOR_BO_NO_MMAP)
 		return -EINVAL;
@@ -227,6 +228,7 @@ panthor_gem_create_with_handle(struct drm_file *file,
 
 	/* drop reference from allocate - handle holds it now. */
 	drm_gem_object_put(&shmem->base);
+	pr_info("[latte][%s][%-4d] handle = %d\n", __func__, current->pid, *handle);
 
 	return ret;
 }
