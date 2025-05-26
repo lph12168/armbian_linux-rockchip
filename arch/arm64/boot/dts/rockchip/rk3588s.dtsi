@@ -2362,6 +2362,31 @@
 		};
 	};
 
+/*
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		mygpu_reserved_mem: mygpu_reserved_mem@0x10000000 {
+			reg = <0x0 (256 * 0x100000) 0x0 (128 * 0x100000)>;
+			no-map;
+		};
+
+		mygpu_reserved_reg: mygpu_reserved_reg@0x18000000 {
+			reg = <0x0 0x18000000 0x0 4>;
+			no-map;
+		};
+	};
+
+	mygpu {
+		compatible = "latte,mygpu";
+		reg = <0x0 0x18000000 0x0 0x4>;
+		reg-names = "user_reg";
+		memory-region = <&mygpu_reserved_mem>;
+	};
+*/
+
 	gpu: gpu@fb000000 {
 		compatible = "arm,mali-bifrost";
 		reg = <0x0 0xfb000000 0x0 0x200000>;
